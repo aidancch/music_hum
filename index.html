@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Music Hum Listening Exam</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a2332;
+      --ink-soft: #3d4a5c;
+      --paper: #f7f4ef;
+      --panel: #ffffff;
+      --panel-border: #d8dde6;
+      --accent: #0d6e6e;
+      --accent-hover: #095858;
+      --accent-soft: #e6f3f3;
+      --correct: #1a7a4c;
+      --correct-bg: #d8f3e4;
+      --incorrect: #b33a3a;
+      --incorrect-bg: #f8dada;
+      --muted: #6b7789;
+      --shadow: 0 8px 28px rgba(26, 35, 50, 0.08);
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Source Sans 3", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse 80% 50% at 10% -10%, rgba(13, 110, 110, 0.12), transparent 55%),
+        radial-gradient(ellipse 60% 40% at 100% 0%, rgba(26, 35, 50, 0.06), transparent 50%),
+        linear-gradient(180deg, #eef2f6 0%, var(--paper) 45%, #ebe6df 100%);
+    }
+
+    .wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 3rem;
+    }
+
+    header {
+      margin-bottom: 1.5rem;
+    }
+
+    header h1 {
+      font-family: "Fraunces", serif;
+      font-size: clamp(1.75rem, 4vw, 2.35rem);
+      font-weight: 700;
+      margin: 0 0 0.35rem;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    header p {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 1.05rem;
+    }
+
+    .settings {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.25rem 1.35rem 1.4rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .settings h2 {
+      font-family: "Fraunces", serif;
+      font-size: 1.05rem;
+      font-weight: 500;
+      margin: 0 0 1rem;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .setting-row {
+      display: grid;
+      gap: 0.55rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .setting-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .setting-row label.setting-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .toggle-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    .toggle-group input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .toggle-group label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0.7rem 0.6rem;
+      border: 1.5px solid var(--panel-border);
+      border-radius: 10px;
+      background: #f8fafc;
+      color: var(--ink-soft);
+      font-size: 0.92rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .toggle-group input:checked + label {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .toggle-group label:hover {
+      border-color: #b0bac8;
+    }
+
+    .quiz {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.5rem 1.35rem 1.6rem;
+    }
+
+    .quiz h2 {
+      font-family: "Fraunces", serif;
+      font-size: 1.35rem;
+      margin: 0 0 1.15rem;
+    }
+
+    .btn {
+      appearance: none;
+      border: none;
+      border-radius: 10px;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s, opacity 0.15s;
+    }
+
+    .btn:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      background: var(--accent);
+      color: #fff;
+      font-size: 1.1rem;
+      letter-spacing: 0.01em;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-hover);
+    }
+
+    .playback {
+      margin: 1.25rem 0 1.4rem;
+      padding: 1rem 1.1rem;
+      background: linear-gradient(135deg, #f0f4f8, #e8eef4);
+      border-radius: 12px;
+      border: 1px solid #d5dde8;
+    }
+
+    .playback-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+      color: var(--ink-soft);
+      font-size: 0.98rem;
+    }
+
+    .playback-status .time {
+      font-variant-numeric: tabular-nums;
+      color: var(--ink);
+    }
+
+    .viz {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 4px;
+      height: 36px;
+    }
+
+    .viz span {
+      width: 5px;
+      height: 8px;
+      border-radius: 3px;
+      background: var(--accent);
+      opacity: 0.35;
+      transform-origin: bottom;
+    }
+
+    .viz.playing span {
+      opacity: 0.85;
+      animation: barPulse 0.9s ease-in-out infinite;
+    }
+
+    .viz span:nth-child(1) { animation-delay: 0s; }
+    .viz span:nth-child(2) { animation-delay: 0.1s; }
+    .viz span:nth-child(3) { animation-delay: 0.2s; }
+    .viz span:nth-child(4) { animation-delay: 0.05s; }
+    .viz span:nth-child(5) { animation-delay: 0.15s; }
+    .viz span:nth-child(6) { animation-delay: 0.25s; }
+    .viz span:nth-child(7) { animation-delay: 0.08s; }
+    .viz span:nth-child(8) { animation-delay: 0.18s; }
+    .viz span:nth-child(9) { animation-delay: 0.12s; }
+    .viz span:nth-child(10) { animation-delay: 0.22s; }
+    .viz span:nth-child(11) { animation-delay: 0.03s; }
+    .viz span:nth-child(12) { animation-delay: 0.16s; }
+
+    @keyframes barPulse {
+      0%, 100% { height: 8px; opacity: 0.45; }
+      50% { height: 32px; opacity: 1; }
+    }
+
+    .progress-track {
+      margin-top: 0.75rem;
+      height: 6px;
+      background: #c9d3e0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      border-radius: 999px;
+      transition: width 0.1s linear;
+    }
+
+    .answer-area {
+      min-height: 8rem;
+    }
+
+    .prompt {
+      margin: 0 0 0.85rem;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .mcq-options {
+      display: grid;
+      gap: 0.6rem;
+    }
+
+    .mcq-btn {
+      width: 100%;
+      text-align: left;
+      padding: 0.85rem 1rem;
+      background: #f8fafc;
+      border: 1.5px solid var(--panel-border);
+      border-radius: 10px;
+      color: var(--ink);
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    .mcq-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .mcq-btn.correct {
+      background: var(--correct-bg);
+      border-color: var(--correct);
+      color: var(--correct);
+    }
+
+    .mcq-btn.incorrect {
+      background: var(--incorrect-bg);
+      border-color: var(--incorrect);
+      color: var(--incorrect);
+    }
+
+    .free-text {
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .free-text input[type="text"] {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border: 1.5px solid var(--panel-border);
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 1rem;
+      color: var(--ink);
+      background: #fff;
+      outline: none;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .free-text input[type="text"]:focus {
+      border-color: var(--accent);
+    }
+
+    .free-text input[type="text"].correct {
+      background: var(--correct-bg);
+      border-color: var(--correct);
+    }
+
+    .free-text input[type="text"].incorrect {
+      background: var(--incorrect-bg);
+      border-color: var(--incorrect);
+    }
+
+    .btn-submit {
+      justify-self: start;
+      padding: 0.7rem 1.35rem;
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .btn-submit:hover:not(:disabled) {
+      background: #0f1724;
+    }
+
+    .feedback {
+      margin-top: 1rem;
+      padding: 0.85rem 1rem;
+      border-radius: 10px;
+      font-weight: 500;
+      line-height: 1.4;
+      display: none;
+    }
+
+    .feedback.show {
+      display: block;
+    }
+
+    .feedback.success {
+      background: var(--correct-bg);
+      color: var(--correct);
+      border: 1px solid #9ed9b8;
+    }
+
+    .feedback.error {
+      background: var(--incorrect-bg);
+      color: var(--incorrect);
+      border: 1px solid #e8a8a8;
+    }
+
+    .feedback .correct-answer {
+      display: block;
+      margin-top: 0.4rem;
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .idle-hint {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    audio {
+      display: none;
+    }
+
+    @media (max-width: 520px) {
+      .toggle-group {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Music Hum Listening</h1>
+      <p>Identify the composer and work from a 30-second clip.</p>
+    </header>
+
+    <section class="settings" aria-label="Settings">
+      <h2>Settings</h2>
+
+      <div class="setting-row">
+        <span class="setting-label">Playback Mode</span>
+        <div class="toggle-group">
+          <input type="radio" name="playbackMode" id="playback-first" value="first" checked />
+          <label for="playback-first">First 30 seconds</label>
+          <input type="radio" name="playbackMode" id="playback-random" value="random" />
+          <label for="playback-random">Random 30-second range</label>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <span class="setting-label">Question Format</span>
+        <div class="toggle-group">
+          <input type="radio" name="questionFormat" id="format-mcq" value="mcq" checked />
+          <label for="format-mcq">Multiple Choice (MCQ)</label>
+          <input type="radio" name="questionFormat" id="format-text" value="text" />
+          <label for="format-text">Free Text Response</label>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <span class="setting-label">Study Mode</span>
+        <div class="toggle-group">
+          <input type="radio" name="studyMode" id="study-learn" value="learn" checked />
+          <label for="study-learn">Learn Mode</label>
+          <input type="radio" name="studyMode" id="study-random" value="random" />
+          <label for="study-random">Truly Random</label>
+        </div>
+      </div>
+    </section>
+
+    <section class="quiz" aria-label="Quiz">
+      <h2>Listening Quiz</h2>
+
+      <button type="button" class="btn btn-primary" id="playNextBtn">Play Next Clip</button>
+
+      <div class="playback" aria-live="polite">
+        <div class="playback-status">
+          <span id="statusLabel">Ready</span>
+          <span class="time" id="timeLabel">0:00 / 0:30</span>
+        </div>
+        <div class="viz" id="viz" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <div class="answer-area" id="answerArea">
+        <p class="idle-hint">Press “Play Next Clip” to begin.</p>
+      </div>
+
+      <div class="feedback" id="feedback" role="status"></div>
+    </section>
+  </div>
+
+  <audio id="audio" preload="metadata"></audio>
+
+  <script>
+    const TRACKS = [
+      {
+        file: "Gradual - III. Christmas Mass Viderunt omnes fines Terrae.mp3",
+        answer: "Anonymous, Viderunt Omnes",
+      },
+      {
+        file: "Symphonia et Ordo virtutum O Euchari, in leta via.mp3",
+        answer: "Hildegard von Bingen, O Euchari",
+      },
+      {
+        file: "Josquin Ave Maria... Virgo Serena.mp3",
+        answer: "Josquin, Ave Maria",
+      },
+      {
+        file: "Madrigali a cinque voci, Libro sesto (1611) Moro, lasso! Al mio duolo.mp3",
+        answer: "Carlo Gesualdo, Moro Lasso (I die, alas)",
+      },
+      {
+        file: "Che si può fare.mp3",
+        answer: "Barbara Strozzi, Che si puo fare (What can you do)",
+      },
+      {
+        file: "L'Orfeo, favola in musica, SV 318, Act 2 Ritornello - Vi ricorda, o boschi ombrosi (Orfeo) -.mp3",
+        answer: "Claudio Monteverdi, Orfeo",
+      },
+      {
+        file: "J.S. Bach - Prelude in C Major.mp3",
+        answer: "J.S. Bach, Prelude in C Major",
+      },
+      {
+        file: "J.S. Bach - Fugue no. 1 in C major [BWV 846].mp3",
+        answer: "J.S. Bach, Fugue in C Major",
+      },
+      {
+        file: "Anne-Sophie Mutter, Mutter's Virtuosi - Saint-Georges Violin Concerto No. 2, A Major III. Rondeau.mp3",
+        answer: "Joseph Bologne, Violin Concerto in A Major (III)",
+      },
+      {
+        file: "Mozart Le nozze di Figaro, K. 492 Act 2 Porgi amor.mp3",
+        answer: "W.A. Mozart, \"Porgi Amor\" from The Marriage of Figaro",
+      },
+      {
+        file: "1st Mvt , Beethoven Symphony #5, Carlos Kleiber.mp3",
+        answer: "Ludwig van Beethoven, Symphony no. 5 (I)",
+      },
+    ];
+
+    const CLIP_SECONDS = 30;
+    const WEIGHT_MIN = 1;
+    const WEIGHT_MAX = 16;
+    const WEIGHT_CORRECT_FACTOR = 0.5;
+    const WEIGHT_WRONG_BOOST = 2;
+
+    const audio = document.getElementById("audio");
+    const playNextBtn = document.getElementById("playNextBtn");
+    const answerArea = document.getElementById("answerArea");
+    const feedback = document.getElementById("feedback");
+    const statusLabel = document.getElementById("statusLabel");
+    const timeLabel = document.getElementById("timeLabel");
+    const progressFill = document.getElementById("progressFill");
+    const viz = document.getElementById("viz");
+
+    const weights = TRACKS.map(() => 4);
+    let currentIndex = null;
+    let clipStart = 0;
+    let answered = false;
+    let rafId = null;
+    let stopTimer = null;
+
+    function getSetting(name) {
+      return document.querySelector(`input[name="${name}"]:checked`).value;
+    }
+
+    function formatTime(seconds) {
+      const s = Math.max(0, Math.min(CLIP_SECONDS, seconds));
+      const m = Math.floor(s / 60);
+      const rem = Math.floor(s % 60);
+      return `${m}:${String(rem).padStart(2, "0")}`;
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function pickTrackIndex() {
+      const mode = getSetting("studyMode");
+      if (mode === "random") {
+        return Math.floor(Math.random() * TRACKS.length);
+      }
+
+      const total = weights.reduce((sum, w) => sum + w, 0);
+      let r = Math.random() * total;
+      for (let i = 0; i < weights.length; i++) {
+        r -= weights[i];
+        if (r <= 0) return i;
+      }
+      return weights.length - 1;
+    }
+
+    function updateWeight(index, correct) {
+      if (getSetting("studyMode") !== "learn") return;
+      if (correct) {
+        weights[index] = Math.max(WEIGHT_MIN, weights[index] * WEIGHT_CORRECT_FACTOR);
+      } else {
+        weights[index] = Math.min(WEIGHT_MAX, weights[index] + WEIGHT_WRONG_BOOST);
+      }
+    }
+
+    function clearFeedback() {
+      feedback.className = "feedback";
+      feedback.textContent = "";
+    }
+
+    function showFeedback(ok, message, correctAnswer) {
+      feedback.className = `feedback show ${ok ? "success" : "error"}`;
+      feedback.textContent = "";
+      feedback.appendChild(document.createTextNode(message));
+      if (!ok && correctAnswer) {
+        const span = document.createElement("span");
+        span.className = "correct-answer";
+        span.textContent = `Correct answer: ${correctAnswer}`;
+        feedback.appendChild(span);
+      }
+    }
+
+    function setPlaybackIdle(label = "Ready") {
+      statusLabel.textContent = label;
+      timeLabel.textContent = "0:00 / 0:30";
+      progressFill.style.width = "0%";
+      viz.classList.remove("playing");
+    }
+
+    function stopClip() {
+      if (stopTimer) {
+        clearTimeout(stopTimer);
+        stopTimer = null;
+      }
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+      audio.pause();
+      viz.classList.remove("playing");
+    }
+
+    function updatePlaybackUI() {
+      if (audio.paused) return;
+      const elapsed = Math.max(0, audio.currentTime - clipStart);
+      const clamped = Math.min(CLIP_SECONDS, elapsed);
+      timeLabel.textContent = `${formatTime(clamped)} / 0:30`;
+      progressFill.style.width = `${(clamped / CLIP_SECONDS) * 100}%`;
+
+      if (elapsed >= CLIP_SECONDS - 0.05) {
+        finishClip();
+        return;
+      }
+      rafId = requestAnimationFrame(updatePlaybackUI);
+    }
+
+    function finishClip() {
+      stopClip();
+      statusLabel.textContent = "Clip finished";
+      timeLabel.textContent = "0:30 / 0:30";
+      progressFill.style.width = "100%";
+    }
+
+    function waitForMetadata() {
+      return new Promise((resolve, reject) => {
+        if (audio.readyState >= 1 && Number.isFinite(audio.duration) && audio.duration > 0) {
+          resolve(audio.duration);
+          return;
+        }
+        const onLoaded = () => {
+          cleanup();
+          resolve(audio.duration);
+        };
+        const onError = () => {
+          cleanup();
+          reject(new Error("Failed to load audio"));
+        };
+        const cleanup = () => {
+          audio.removeEventListener("loadedmetadata", onLoaded);
+          audio.removeEventListener("error", onError);
+        };
+        audio.addEventListener("loadedmetadata", onLoaded);
+        audio.addEventListener("error", onError);
+      });
+    }
+
+    async function playClip(index) {
+      stopClip();
+      clearFeedback();
+      answered = false;
+      currentIndex = index;
+
+      const track = TRACKS[index];
+      // encodeURIComponent so "#" (e.g. Symphony #5) is not treated as a URL fragment
+      audio.src = "recordings/" + encodeURIComponent(track.file);
+
+      try {
+        await waitForMetadata();
+      } catch (err) {
+        statusLabel.textContent = "Could not load audio";
+        setPlaybackIdle("Error loading file");
+        return;
+      }
+
+      const duration = audio.duration;
+      const playbackMode = getSetting("playbackMode");
+
+      if (playbackMode === "first") {
+        clipStart = 0;
+      } else {
+        const maxStart = Math.max(0, duration - CLIP_SECONDS);
+        clipStart = maxStart > 0 ? Math.random() * maxStart : 0;
+      }
+
+      audio.currentTime = clipStart;
+      statusLabel.textContent = "Playing…";
+      viz.classList.add("playing");
+
+      try {
+        await audio.play();
+      } catch (err) {
+        statusLabel.textContent = "Playback blocked — click Play again";
+        viz.classList.remove("playing");
+        return;
+      }
+
+      stopTimer = setTimeout(() => {
+        finishClip();
+      }, CLIP_SECONDS * 1000);
+
+      rafId = requestAnimationFrame(updatePlaybackUI);
+      renderAnswerUI();
+    }
+
+    function pickWrongAnswers(correctIndex, count) {
+      const others = TRACKS.map((t, i) => i).filter((i) => i !== correctIndex);
+      return shuffle(others).slice(0, count).map((i) => TRACKS[i].answer);
+    }
+
+    function handleAnswer(correct) {
+      if (answered || currentIndex === null) return;
+      answered = true;
+      updateWeight(currentIndex, correct);
+
+      const track = TRACKS[currentIndex];
+      if (correct) {
+        showFeedback(true, "Correct!");
+      } else {
+        showFeedback(false, "Incorrect.", track.answer);
+      }
+    }
+
+    function renderAnswerUI() {
+      const format = getSetting("questionFormat");
+      answerArea.innerHTML = "";
+
+      if (format === "mcq") {
+        const p = document.createElement("p");
+        p.className = "prompt";
+        p.textContent = "Who composed this, and what is the work?";
+        answerArea.appendChild(p);
+
+        const options = shuffle([
+          TRACKS[currentIndex].answer,
+          ...pickWrongAnswers(currentIndex, 3),
+        ]);
+
+        const list = document.createElement("div");
+        list.className = "mcq-options";
+
+        options.forEach((text) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "btn mcq-btn";
+          btn.textContent = text;
+          btn.addEventListener("click", () => {
+            if (answered) return;
+            const isCorrect = text === TRACKS[currentIndex].answer;
+            const buttons = list.querySelectorAll(".mcq-btn");
+            buttons.forEach((b) => {
+              b.disabled = true;
+              if (b.textContent === TRACKS[currentIndex].answer) {
+                b.classList.add("correct");
+              }
+            });
+            if (!isCorrect) {
+              btn.classList.add("incorrect");
+            }
+            handleAnswer(isCorrect);
+          });
+          list.appendChild(btn);
+        });
+
+        answerArea.appendChild(list);
+      } else {
+        const p = document.createElement("p");
+        p.className = "prompt";
+        p.textContent = "Type the composer and work (exact wording).";
+        answerArea.appendChild(p);
+
+        const form = document.createElement("div");
+        form.className = "free-text";
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.placeholder = "Composer, Work title…";
+        input.autocomplete = "off";
+        input.spellcheck = false;
+
+        const submit = document.createElement("button");
+        submit.type = "button";
+        submit.className = "btn btn-submit";
+        submit.textContent = "Submit";
+
+        const check = () => {
+          if (answered) return;
+          const typed = input.value.trim().toLowerCase();
+          const expected = TRACKS[currentIndex].answer.trim().toLowerCase();
+          const isCorrect = typed === expected;
+          input.classList.remove("correct", "incorrect");
+          input.classList.add(isCorrect ? "correct" : "incorrect");
+          // readOnly (not disabled) so Enter still reaches the input for "play next"
+          input.readOnly = true;
+          submit.disabled = true;
+          handleAnswer(isCorrect);
+        };
+
+        const playNext = () => {
+          const index = pickTrackIndex();
+          playClip(index);
+        };
+
+        submit.addEventListener("click", check);
+        input.addEventListener("keydown", (e) => {
+          if (e.key !== "Enter") return;
+          e.preventDefault();
+          if (answered) {
+            playNext();
+          } else {
+            check();
+          }
+        });
+
+        form.appendChild(input);
+        form.appendChild(submit);
+        answerArea.appendChild(form);
+        input.focus();
+      }
+    }
+
+    playNextBtn.addEventListener("click", () => {
+      const index = pickTrackIndex();
+      playClip(index);
+    });
+
+    // Global Enter: after free-text is graded, play next even if focus left the input
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" || !answered) return;
+      if (getSetting("questionFormat") !== "text") return;
+      if (e.target.matches("input, textarea, button, select")) return;
+      e.preventDefault();
+      playNextBtn.click();
+    });
+
+    audio.addEventListener("ended", () => {
+      finishClip();
+    });
+
+    setPlaybackIdle();
+  </script>
+</body>
+</html>
