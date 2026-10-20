@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Music Hum Reading Exam</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a2332;
+      --ink-soft: #3d4a5c;
+      --paper: #f7f4ef;
+      --panel: #ffffff;
+      --panel-border: #d8dde6;
+      --accent: #0d6e6e;
+      --accent-hover: #095858;
+      --accent-soft: #e6f3f3;
+      --correct: #1a7a4c;
+      --correct-bg: #d8f3e4;
+      --incorrect: #b33a3a;
+      --incorrect-bg: #f8dada;
+      --muted: #6b7789;
+      --shadow: 0 8px 28px rgba(26, 35, 50, 0.08);
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Source Sans 3", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse 80% 50% at 10% -10%, rgba(13, 110, 110, 0.12), transparent 55%),
+        radial-gradient(ellipse 60% 40% at 100% 0%, rgba(26, 35, 50, 0.06), transparent 50%),
+        linear-gradient(180deg, #eef2f6 0%, var(--paper) 45%, #ebe6df 100%);
+    }
+
+    .wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 3rem;
+    }
+
+    header {
+      margin-bottom: 1.5rem;
+    }
+
+    .app-nav {
+      display: flex;
+      gap: 0.45rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .app-nav a {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.28rem 0.72rem;
+      border-radius: 999px;
+      border: 1.5px solid var(--panel-border);
+      background: #fff;
+      color: var(--ink-soft);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .app-nav a[aria-current="page"] {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    header h1 {
+      font-family: "Fraunces", serif;
+      font-size: clamp(1.75rem, 4vw, 2.35rem);
+      font-weight: 700;
+      margin: 0 0 0.35rem;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    header p {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 1.05rem;
+    }
+
+    .settings {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.25rem 1.35rem 1.4rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .settings h2 {
+      font-family: "Fraunces", serif;
+      font-size: 1.05rem;
+      font-weight: 500;
+      margin: 0 0 1rem;
+      color: var(--ink-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .setting-row {
+      display: grid;
+      gap: 0.55rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .setting-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .setting-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .toggle-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    .toggle-group input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .toggle-group label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0.7rem 0.6rem;
+      border: 1.5px solid var(--panel-border);
+      border-radius: 10px;
+      background: #f8fafc;
+      color: var(--ink-soft);
+      font-size: 0.92rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .toggle-group input:checked + label {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .toggle-group label:hover {
+      border-color: #b0bac8;
+    }
+
+    .quiz {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.5rem 1.35rem 1.6rem;
+    }
+
+    .quiz h2 {
+      font-family: "Fraunces", serif;
+      font-size: 1.35rem;
+      margin: 0 0 1.15rem;
+    }
+
+    .btn {
+      appearance: none;
+      border: none;
+      border-radius: 10px;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s, opacity 0.15s;
+    }
+
+    .btn:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      background: var(--accent);
+      color: #fff;
+      font-size: 1.1rem;
+      letter-spacing: 0.01em;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-hover);
+    }
+
+    .passage {
+      margin: 1.25rem 0 1.4rem;
+      padding: 1.15rem 1.2rem;
+      background: linear-gradient(135deg, #f0f4f8, #e8eef4);
+      border-radius: 12px;
+      border: 1px solid #d5dde8;
+      max-height: 22rem;
+      overflow: auto;
+    }
+
+    .passage-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 0.85rem;
+      font-weight: 600;
+      color: var(--ink-soft);
+      font-size: 0.92rem;
+    }
+
+    .passage-body {
+      margin: 0;
+      color: var(--ink);
+      font-size: 1.02rem;
+      line-height: 1.6;
+    }
+
+    .passage-body p {
+      margin: 0 0 0.9rem;
+    }
+
+    .passage-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    .answer-area {
+      min-height: 8rem;
+    }
+
+    .prompt {
+      margin: 0 0 0.85rem;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .mcq-options {
+      display: grid;
+      gap: 0.6rem;
+    }
+
+    .mcq-btn {
+      width: 100%;
+      text-align: left;
+      padding: 0.85rem 1rem;
+      background: #f8fafc;
+      border: 1.5px solid var(--panel-border);
+      border-radius: 10px;
+      color: var(--ink);
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    .mcq-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .mcq-btn.correct {
+      background: var(--correct-bg);
+      border-color: var(--correct);
+      color: var(--correct);
+    }
+
+    .mcq-btn.incorrect {
+      background: var(--incorrect-bg);
+      border-color: var(--incorrect);
+      color: var(--incorrect);
+    }
+
+    .free-text {
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .free-text input[type="text"] {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border: 1.5px solid var(--panel-border);
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 1rem;
+      color: var(--ink);
+      background: #fff;
+      outline: none;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .free-text input[type="text"]:focus {
+      border-color: var(--accent);
+    }
+
+    .free-text input[type="text"].correct {
+      background: var(--correct-bg);
+      border-color: var(--correct);
+    }
+
+    .free-text input[type="text"].incorrect {
+      background: var(--incorrect-bg);
+      border-color: var(--incorrect);
+    }
+
+    .btn-submit {
+      justify-self: start;
+      padding: 0.7rem 1.35rem;
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .btn-submit:hover:not(:disabled) {
+      background: #0f1724;
+    }
+
+    .feedback {
+      margin-top: 1rem;
+      padding: 0.85rem 1rem;
+      border-radius: 10px;
+      font-weight: 500;
+      line-height: 1.4;
+      display: none;
+    }
+
+    .feedback.show {
+      display: block;
+    }
+
+    .feedback.success {
+      background: var(--correct-bg);
+      color: var(--correct);
+      border: 1px solid #9ed9b8;
+    }
+
+    .feedback.error {
+      background: var(--incorrect-bg);
+      color: var(--incorrect);
+      border: 1px solid #e8a8a8;
+    }
+
+    .feedback .correct-answer {
+      display: block;
+      margin-top: 0.4rem;
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .idle-hint {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    @media (max-width: 520px) {
+      .toggle-group {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <nav class="app-nav" aria-label="Study apps">
+        <a href="index.html">Listening</a>
+        <a href="readings.html" aria-current="page">Readings</a>
+      </nav>
+      <h1>Music Hum Readings</h1>
+      <p>Identify the author and work from a passage.</p>
+    </header>
+
+    <section class="settings" aria-label="Settings">
+      <h2>Settings</h2>
+
+      <div class="setting-row">
+        <span class="setting-label">Passage Mode</span>
+        <div class="toggle-group">
+          <input type="radio" name="passageMode" id="passage-full" value="full" checked />
+          <label for="passage-full">Full Passage</label>
+          <input type="radio" name="passageMode" id="passage-slice" value="slice" />
+          <label for="passage-slice">Random Slice (100–150 words)</label>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <span class="setting-label">Question Format</span>
+        <div class="toggle-group">
+          <input type="radio" name="questionFormat" id="format-mcq" value="mcq" checked />
+          <label for="format-mcq">Multiple Choice (MCQ)</label>
+          <input type="radio" name="questionFormat" id="format-text" value="text" />
+          <label for="format-text">Free Text Response</label>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <span class="setting-label">Study Mode</span>
+        <div class="toggle-group">
+          <input type="radio" name="studyMode" id="study-learn" value="learn" checked />
+          <label for="study-learn">Learn Mode</label>
+          <input type="radio" name="studyMode" id="study-random" value="random" />
+          <label for="study-random">Truly Random</label>
+        </div>
+      </div>
+    </section>
+
+    <section class="quiz" aria-label="Quiz">
+      <h2>Reading Quiz</h2>
+
+      <button type="button" class="btn btn-primary" id="nextBtn">Next Passage</button>
+
+      <div class="passage" aria-live="polite">
+        <div class="passage-meta">
+          <span id="statusLabel">Ready</span>
+          <span id="wordLabel"></span>
+        </div>
+        <div class="passage-body" id="passageBody">
+          <p class="idle-hint">Press “Next Passage” to begin.</p>
+        </div>
+      </div>
+
+      <div class="answer-area" id="answerArea">
+        <p class="idle-hint">Identify the reading after the excerpt appears.</p>
+      </div>
+
+      <div class="feedback" id="feedback" role="status"></div>
+    </section>
+  </div>
+
+  <script>
+    const READINGS = [
+  {
+    "file": "plato_on_music.txt",
+    "answer": "Plato on Music",
+    "text": "Plato's Musical Idealism\nIts ethos made music a powerful force for good or for evil in the view of Greek thinkers. Plato, the most influential of them, dealt with the subject repeatedly. He looked down on the use of music for mere pleasure.\nSecond-rate and commonplace people, being too uneducated to entertain themselves as they drink by using their own voices and conversational resources, put up the price of female musicians, paying well for the hire of an extraneous voice—that of the pipe—and find their entertainment in its warblings. But where the drinkers are men of worth and culture, you will find no girls piping or dancing or harping. They are quite capable of enjoying their own company without such frivolous nonsense, using their own voices in sober discussion and each taking his turn to speak or listen—even if the drinking is really heavy. Protagoras 347c–d.\nPlato's nostalgia for an idealized Golden Age of Greece profoundly colored his thinking on music. When virtue and simplicity of customs ruled, music had seen better days. This ideal, probably strengthened by Plato's admiration for the supposed virtues of the disciplined, self-denying Spartans (as against the vices of the pleasure-seeking Athenians), leads him to set down pronouncements that will find echoes whenever, in time to come, men will seek to control or reform music. For Plato, and like-minded thinkers (including such non-Westerners as Confucius), musical license is but a step away from social chaos.\nOur music was formerly divided into several kinds and patterns. One kind of song, which went by the name of a hymn, consisted of prayers to the gods; there was a second and contrasting kind which might well have been called a lament; paeans were a third\n(Bottom Page Footnote) who, by the weights of the various hammers, worked out the consonances for himself). Down below, the monochord, a more \"modern\" device for tone measurement (see p. 42), is shown, along with a harp (laterally strung like a lyre), which represents music's power of \"ethos\" (see the readings on Orpheus and David). A vielle, or medieval fiddle, is also included in the design. This was the most widespread and versatile practical instrument in late medieval music (see Johannes de Grocheo, p. 55). Munich, Bayerische Staatsbibliothek, Clm.2599, fol. 96^v.\nkind, and there was a fourth, the dithyramb, as it was called, dealing, if I am not mistaken, with the birth of Dionysus. Now these and other types were definitely fixed, and it was not permissible to misuse one kind of melody for another. The competence to take cognizance of these rules, to pass verdicts in accord with them, and, in case of need, to penalize their infraction was not left, as it is today, to the catcalls and discordant outcries of the crowd, nor yet to the clapping of applauders; the educated made it their rule to hear the performances through in silence, and for the boys, their attendants, and the rabble at large, there was the discipline of the official's rod to enforce order. Thus the bulk of the populace was content to submit to this strict control in such matters without venturing to pronounce judgment by its clamors.\nAfterward, in course of time, an unmusical license set in with the appearance of poets who were men of native genius, but ignorant of what is right and legitimate in the realm of the Muses. Possessed by a frantic and unhallowed lust for pleasure, they contaminated laments with hymns and paeans with dithyrambs, actually imitated the strains of the flute on the harp, and created a universal confusion of forms. Thus their folly led them unintentionally to slander their profession by the assumption that in music there is no such thing as a right and a wrong, the right standard of judgment being the pleasure given to the hearer, be he high or low. By compositions of such a kind and discourse to the same effect, they naturally inspired the multitude with contempt of musical law, and a conceit of their own competence as judges. Thus our once silent audiences have found a voice, in the persuasion that they understand what is good and bad in art; the old \"sovereignty of the best\" in that sphere has given way to an evil \"sovereignty of the audience.\" If the consequence had been even a democracy, no great harm would have been done, so long as the democracy was confined to art, and composed of free men. But, as things are with us, music has given occasion to a general conceit of universal knowledge and contempt for law, and liberty has followed in their train. Fear was cast out by confidence in supposed knowledge, and the loss of it gave birth to impudence. For to be unconcerned for the judgment of one's betters in the assurance which comes of a reckless excess of liberty is nothing in the world but reprehensible impudence.\nSo the next stage of the journey toward liberty will be refusal to submit to the magistrates, and on this will follow emancipation from the authority and correction of parents and elders; then, as the goal of the race is approached, comes the effort to escape obedience to the law, and, when that goal is all but reached, contempt for oaths, for the plighted word, and all religion. The spectacle of the Titanic nature of which our old legends speak is re-enacted; man returns to the old condition of a hell of unending misery. Laws 700a–701c.\nIt is this horror of disorder that underlies the celebrated passages concerning music in the Republic. Here, as elsewhere, Plato's use of the word music is more comprehensive than ours. It includes lyric poetry and also, sometimes, the general education of the intellect as against gymnastics, the education of the body. In the ideal city-state, says Plato,\nThe overseers must be watchful against its insensible corruption. They must throughout be watchful against innovations in music and gymnastics counter to the established order, and to the best of their power guard against them, fearing when anyone says that that song is most regarded among men \"which hovers newest on the singer's lips\" [Odyssey i. 351], lest it be supposed that the poet means not new songs but a new way of song and is commending this. But we must not praise that sort of thing nor conceive it to be the poet's meaning. For a change to a new type of music is something to beware of as a hazard of all our fortunes. For the modes of music are never disturbed without unsettling of the most fundamental political and social conventions.\nRepublic 424b–c.\nA discussion of the Greek modes, or \"harmonies,\" would be too far-reaching for our purposes. Suffice it to say that the Greeks had very definite opinions as to the effect of their various modes, which they called by traditional, originally tribal, names. Here, from Book iii of the Republic, is part of the famous dialogue between Socrates (as Plato's mouthpiece) and Glaucon concerning the banishment of most of the modes from the ideal city-state. (That the Dorian survived is no surprise, since the Greeks associated the name Dorian with Sparta, the \"brave\" city-state Plato so admired.) In later passages, most instruments get banished as well. Note the stress Plato places on \"imitation.\" All art, according to him, is imitation of objects perceptible by the senses. And in Book x of the Republic he reminds us that all perceptible objects are themselves imitations of eternal originals, so that art consists of nothing more than an imitation of an imitation.\nWe said we did not require dirges and lamentations in words. We do not. What, then, are the dirgelike modes of music? Tell me, for you are a musician. The mixed Lydian, he said, and the tense or higher Lydian, and similar modes. These, then, said I, we must do away with. But again, drunkenness is a thing most unbefitting guardians, and so is softness and sloth. Yes. What, then, are the soft and convivial modes? There are certain Ionian and also Lydian modes that are called lax. Will you make any use of them for warriors? None at all, he said, but it would seem that you have left the Dorian and the Phrygian. I don’t know the musical modes, I said, but leave us that mode that would fittingly imitate the utterances and the accents of a brave man who is engaged in warfare or in any enforced business, and who, when he has failed, either meeting wounds or death or having fallen into some other mishap, in all these conditions confronts fortune with steadfast endurance and repels her strokes. And another for such a man engaged in works of peace, not enforced but voluntary, either trying to persuade somebody of something and imploring him—whether it be a god, through prayer, or a man, by teaching and admonition—or contrariwise yielding himself to another who is petitioning him or teaching him or trying to change his opinions, and in consequence faring according to his wish, and not bearing himself arrogantly, but in all this acting modestly and moderately and acquiescing in the outcome. Leave us these two modes—the enforced and the voluntary—that will best imitate the utterances of men failing or succeeding, the temperate, the brave—leave us these. Well, said he, you are asking me to leave none other than those I just spoke of.\n\n\n"
+  },
+  {
+    "file": "hildegard_letters_to_the_prelates_at_mainz.txt",
+    "answer": "Hildegard, Letter to the Prelates at Mainz",
+    "text": "The Letters of Hildegard of Bingen\n\nHildegard to the prelates at Mainz^1   \n1178–79   This is perhaps the most famous—certainly the most intriguing—of all Hildegard's letters, because of her elaboration of the idea of music as a means of recapturing the original joy and beauty of paradise. Placed under interdict for her failure to obey the prelates of Mainz, Hildegard and her community felt the loss of music—specifically singled out by the interdict—most intensely, as one can see from what follows. In this letter, as Peter Dronke points out (Women Writers, p. 197), Hildegard \"works out her own philosophy of music: music becomes not only the musica mundana, the cosmic harmony familiar from Boethius's De Musica, but a way of understanding history—Adam and Lucifer, the Old Testament prophets and the New Testament Church—and a way in which human beings can still incarnate heavenly beauty in an earthly mode. The symbolism then turns into micro-cosmic allegory—music is the human body and soul, and the principles with which they are informed—an allegory that is dynamic and in no way forced, arising effortlessly out of Hildegard's pattern of thoughts and images.\" Despite the compelling argument that Hildegard makes, the prelates of Mainz paid absolutely no heed to this letter, and persisted inflexibly with the interdict.   By a vision, which was implanted in my soul by God the Great Artisan before I was born, I have been compelled to write these things because of the interdict by which our superiors have bound us, on account of a certain dead man buried at our monastery, a man buried without any objection, with his own priest officiating. Yet only a few days after his burial, these men ordered us to remove him from our cemetery. Seized by no small terror, as a result, I looked as usual to the True Light, and, with wakeful eyes, I saw in my spirit that if this man were disinterred in accordance with their commands, a terrible and lamentable danger would come upon us like a dark cloud before a threatening thunderstorm.   Therefore, we have not presumed to remove the body of the deceased inasmuch as he had confessed his sins, had received extreme unction and communion, and had been buried without objection. Furthermore, we have not yielded to those who advised or even commanded this course of action. Not, certainly, that we take the counsel of upright men or the orders of our superiors lightly, but we would not have it appear that, out of feminine harshness we did injustice to the sacraments of Christ, with which this man had been fortified while he was still alive. But so that we may not be totally disobedient we have, in accordance with their injunction, ceased from singing the divine praises and from participation in Mass, as had been our regular monthly custom. As a result, my sisters and I have been greatly distressed and saddened. Weighed down by this burden, therefore, I heard these words in a vision: It is improper for you to obey human words ordering you to abandon the sacraments of the Garment of the Word of God, Who, born virginally of the Virgin Mary, is your salvation. Still, it is incumbent upon you to seek permission to participate in the sacraments from those prelates who laid the obligation of obedience upon you. For ever since Adam was driven from the bright region of paradise into the exile of this world on account of his disobedience, the conception of all people is justly tainted by that first transgression. Therefore, in accordance with God's inscrutable plan, it was necessary for a man free from all pollution to be born in human flesh, through whom all who are predestined to life might be cleansed from corruption and might be sanctified by the communion of his body so that he might remain in them and they in him for their fortification. That person, however, who is disobedient to the commands of God, as Adam was, and is completely forgetful of Him must be completely cut off from participation in the sacrament of His body, just as he himself has turned away from Him in disobedience. And he must remain so until, purged through penitence, he is permitted by the authorities to receive the communion of the Lord's body again. In contrast, however, a person who is aware that he has incurred such a restriction not as a result of anything that he has done, either consciously or deliberately, may be present at the service of the life-giving sacrament, to be cleansed by the Lamb without sin, Who, in obedience to the Father, allowed Himself to be sacrificed on the altar of the cross that he might restore salvation to all.   In that same vision I also heard that I had erred in not going humbly and devoutly to my superiors for permission to participate in the communion, especially since we were not at fault in receiving that dead man into our cemetery. For, after all, he had been fortified by his own priest with proper Christian procedure, and, without objection from anyone, was buried in our cemetery, with all Bingen joining in the funeral procession. And so God has commanded me to report these things to you, our lords and prelates. Further, I saw in my vision also that by obeying you we have been celebrating the divine office incorrectly, for from the time of your restriction up to the present, we have ceased to sing the divine office, merely reading it instead. And I heard a voice coming from the Living Light concerning the various kinds of praises, about which David speaks in the psalm: \"Praise Him with sound of trumpet: praise Him with psaltery and harp,\" and so forth up to this point: \"Let every spirit praise the Lord\" [Ps 150.3, 6]. These words use outward, visible things to teach us about inward things. Thus the material composition and the quality of these instruments instruct us how we ought to give form to the praise of the Creator and turn all the convictions of our inner being to the same. When we consider these things carefully, we recall that man needed the voice of the living Spirit, but Adam lost this divine voice through disobedience. For while he was still innocent, before his transgression, his voice blended fully with the voices of the angels in their praise of God. Angels are called spirits from that Spirit which is God, and thus they have such voices by virtue of their spiritual nature. But Adam lost that angelic voice which he had in paradise, for he fell asleep to that knowledge which he possessed before his sin, just as a person on waking up only dimly remembers what he had seen in his dreams. And so when he was deceived by the trick of the devil and rejected the will of his Creator, he became wrapped up in the darkness of inward ignorance as the just result of his iniquity.   God, however, restores the souls of the elect to that pristine blessedness by infusing them with the light of truth. And in accordance with His eternal plan, He so devised it that whenever He renews the hearts of many with the pouring out of the prophetic spirit, they might, by means of His interior illumination, regain some of the knowledge which Adam had before he was punished for his sin.   And so the holy prophets, inspired by the Spirit which they had received, were called for this purpose: not only to compose psalms and canticles (by which the hearts of listeners would be inflamed) but also to construct various kinds of musical instruments to enhance these songs of praise with melodic strains. Thereby, both through the form and quality of the instruments, as well as through the meaning of the words which accompany them, those who hear might be taught, as we said above, about inward things, since they have been admonished and aroused by outward things. In such a way, these holy prophets get beyond the music of this exile and recall to mind that divine melody of praise which Adam, in company with the angels, enjoyed in God before his fall.   Men of zeal and wisdom have imitated the holy prophets and have themselves, with human skill, invented several kinds of musical instruments, so that they might be able to sing for the delight of their souls, and they accompanied their singing with instruments played with the flexing of the fingers, recalling, in this way, Adam, who was formed by God's finger, which is the Holy Spirit. For, before he sinned, his voice had the sweetness of all musical harmony. Indeed, if he had remained in his original state, the weakness of mortal man would not have been able to endure the power and the resonance of his voice.   But when the devil, man's great deceiver, learned that man had begun to sing through God's inspiration and, therefore, was being transformed to bring back the sweetness of the songs of heaven, mankind's homeland, he was so terrified at seeing his clever machinations go to ruin that he was greatly tormented. Therefore, he devotes himself continually to thinking up and working out all kinds of wicked contrivances. Thus he never ceases from confounding confession and the sweet beauty of both divine praise and spiritual hymns, eradicating them through wicked suggestions, impure thoughts, or various distractions from the heart of man and even from the mouth of the Church itself, wherever he can, through dissension, scandal, or unjust oppression.   Therefore, you and all prelates must exercise the greatest vigilance to clear the air by full and thorough discussion of the justification for such actions before your verdict closes the mouth of any church singing praises to God or suspends it from handling or receiving the divine sacraments. And you must be especially certain that you are drawn to this action out of zeal for God's justice, rather than out of indignation, unjust emotions, or a desire for revenge, and you must always be on your guard not to be circumvented in your decisions by Satan, who drove man from celestial harmony and the delights of paradise.   Consider, too, that just as the body of Jesus Christ was born of the purity of the Virgin Mary through the operation of the Holy Spirit so, too, the canticle of praise, reflecting celestial harmony, is rooted in the Church through the Holy Spirit. The body is the vestment of the spirit, which has a living voice, and so it is proper for the body, in harmony with the soul, to use its voice to sing praises to God. Whence, in metaphor, the prophetic spirit commands us to praise God with clashing cymbals and cymbals of jubilation [cf. Ps 150.5], as well as other musical instruments which men of wisdom and zeal have invented, because all arts pertaining to things useful and necessary for mankind have been created by the breath that God sent into man's body. For this reason it is proper that God be praised in all things.   And because sometimes a person sighs and groans at the sound of singing, remembering, as it were, the nature of celestial harmony, the prophet, aware that the soul is symphonic and thoughtfully reflecting on the profound nature of the spirit, urges us in the psalm [cf. Ps 32.2, 91.4] to confess to the Lord with the harp and to sing a psalm to Him with the ten-stringed psaltery. His meaning is that the harp, which is plucked from below, relates to the discipline of the body; the psaltery, which is plucked from above, pertains to the exertion of the spirit; the ten chords, to the fulfillment of the law.   Therefore, those who, without just cause, impose silence on a church and prohibit the singing of God's praises and those who have on earth unjustly despoiled God of His honor and glory will lose their place among the chorus of angels, unless they have amended their lives through true penitence and humble restitution. Moreover, let those who hold the keys of heaven beware not to open those things which are to be kept closed nor to close those things which are to be kept open, for harsh judgment will fall upon those who rule, unless, as the apostle says [cf. Rom 12.8], they rule with good judgment.   And I heard a voice saying thus: Who created heaven? God. Who opens heaven to the faithful? God. Who is like Him? No one. And so, O men of faith, let none of you resist Him or oppose Him, lest He fall on you in His might and you have no helper to protect you from His judgment. This time is a womanish time, because the dispensation of God's justice is weak. But the strength of God's justice is exerting itself, a female warrior battling against injustice, so that it might fall defeated.   Notes      In 1178 Hildegard had permitted the burial of a certain nobleman—whose name has not come down to us—in consecrated ground at Mount St. Rupert. This seemingly innocuous decision was to lead to the bitterest confrontation that Hildegard, now eighty years old, had ever faced in her long career. For the dead nobleman had once been excommunicated, and there remained some question of whether he had been absolved from that interdict. At least so alleged the prelates of Mainz, who ordered Hildegard, under pain of excommunication herself, to have the corpse exhumed and cast out of holy ground. The motives of the prelates, however, are suspect, especially on account of the haste with which they acted, while their archbishop was away in Rome serving as mediator between FB and PA.\n\n \n"
+  },
+  {
+    "file": "augustine_confessions.txt",
+    "answer": "Augustine, Confessions",
+    "text": "The delights of the ear had enticed me and held me in their grip, but you have unbound and liberated me. Yet, I confess, I still surrender to some slight pleasure in those sounds to which your words give life, when they are sung by a sweet and skilled voice, but not so much that I cleave to them, unable to rise above them when I wish. \n\nThe delights of the ear had enticed me and held me in their grip, but you have unbound and liberated me. Yet, I confess, I still surrender to some slight pleasure in those sounds to which your words give life, when they are sung by a sweet and skilled voice, but not so much that I cleave to them, unable to rise above them when I wish. But yet, these chants, animated as they are by your words, must gain entry to me and find in my heart a place of some dignity, even if I scarcely provide them a fitting one. Sometimes it seems to me that I grant them more honor than is proper, when I sense that the words stir my soul to greater religious fervor and to a more ardent piety if they are thus sung than if not thus sung, and when I feel that all the diverse affections of my soul have their own proper measures in voice and song, which are stimulated by I know not what hidden correspondences. But the gratification of the flesh—to which I ought not surrender my mind to be enervated—frequently leads me astray, for the senses are not content to accompany reason by patiently following it, but after being admitted only for the sake of reason, they seek to rush ahead and lead it. I sin thus in these things unknowingly, but afterwards I do know.\n\nSometimes, however, overly anxious to avoid this particular snare, I err by excessive severity, and sometimes so much so that I wish every melody of those sweet chants to which the songs of David are set, to be banished from my ears and from the very church. And it seems safer to me what I remember was often told me concerning Bishop Athanasius of Alexandria, who required the reader of the psalm to perform it with so little inflection of voice that it resembled speaking more than singing.\n\nYet when I recall the tears that I shed at the song of the Church in the first days of my recovered faith, and even now as I am moved not by the song but by the things which are sung—when chanted with fluent voice and completely appropriate melody—I acknowledge the great benefit of this practice. Thus I waver between the peril of pleasure and the benefit of my experience; but I am inclined, while not maintaining an irrevocable position, to endorse the custom of singing in church so that weaker souls might rise to a state of devotion by indulging their ears. Yet when it happens that I am moved more by the song than by what is sung, I confess to sinning grievously, and I would prefer not to hear the singer at such times. See now my condition! Weep with me and weep for me, you who cultivate within yourselves the good will whence good deeds proceed (for if you are not so disposed, my words will fail to move you). But you, my Lord and my God, give ear, look and see, have pity on me and heal me, you before whom I have become an enigma unto my self—and that is my very infirmity.\n\n\n"
+  },
+  {
+    "file": "the_earliest_operas.txt",
+    "answer": "The Earliest Operas",
+    "text": "I think it may not prove useless to remind the reader how and when spectacles of this kind originated; which without any doubt, having been received with so much applause at their birth, will sooner or later attain to much greater perfection, perhaps to the point that one day they may be likened to the celebrated tragedies of the ancient Greeks and Latins, the more so if great masters of poetry and of music shall put their hands to them, and if princes, without whose aid any art can but ill be brought to perfection, shall be favorably inclined to them.\n\nHaving repeatedly discoursed on the manner in which the ancients used to represent their tragedies, how they introduced their choruses, whether they employed song, and of what kind, and similar matters, Signor Ottavio Rinuccini [Florentine poet, 1562–1621] took to composing the play of Dafne, and Signor Jacopo Corsi [c. 1560–1604] of honored memory, lover of all sciences and of music in particular (so much so that he is rightly called its Father by all musicians), composed some airs to parts of it. And having grown to like these exceedingly, he resolved to see what effect they should make on the stage, and therefore, together with Signor Ottavio, shared his thought with Signor Jacopo Peri [1561–1633], a great expert in counterpoint and a most exquisite singer. The latter, having listened to their purpose and approved of a part of the airs already composed, took to composing the rest. Signor Corsi liked these uncommonly well and, availing himself of a Carnival festivity in the year 1597, he had [Dafne] played in the presence of my lord the most excellent Duke Giovanni Medici and of some of the principal gentlemen of our town. The pleasure and the amazement produced in the audience by this novel spectacle cannot be described; suffice it to say that each of the many times it was performed it generated the same admiration and the same delight. This experiment having taught Signor Rinuccini how well singing was suited to the expression of every sort of affection, and that it not only afforded no tediousness (as many might perchance have presumed) but indeed incredible delight, he composed his Euridice, dilating somewhat more in the dialogues. Signor Corsi having heard it, and being pleased with the story and the style, he determined to put it on the stage for the wedding of the Most Christian Queen [Maria de’ Medici]. Then it was that Signor Jacopo Peri discovered that artful manner of reciting in song which all Italy admires. I shall not go to the trouble of praising it, since everyone praises it to the skies, nor is there any lover of music who does not keep Orfeo’s songs before him at all times. I will say, though, that no one who has not heard Signor Jacopo sing them himself can fully comprehend the nobility and force of his airs; for he imparts to them such gracefulness, and so forcefully does he impress on the listener the affection of these words, that we must needs either cry or be cheered as he pleases. It would be superfluous to tell how well the performance of that tale was received, there being the testimony of so many princes and lords who attended those splendid nuptials. I shall only say that among those who commended it, my lord the Most Serene Duke of Mantua was so very pleased with it that, among many admirable festivities ordered by His Highness for the magnificent wedding of the Most Serene Prince his son and the Most Serene Infanta of Savoy, he ordered that a musical tale be enacted. And this was Arianna, composed for the occasion by Signor Ottavio Rinuccini, whom my lord the Duke called to Mantua for the purpose. Signor Claudio Monteverdi, a most celebrated musician and chief of His Highness’s music, wrote the airs so exquisitely that one may truthfully aver that the virtues of ancient music were reborn, for all the audience was visibly moved to tears.\n\nThis was the origin of the musical plays, a spectacle truly fit for princes and delightful beyond any other, being one in which are united all the noblest pleasures, such as the invention and treatment of the tale, sense, style, sweetness of rhyme, musical artistry, consorts of voices and of instruments, exquisite beauty of singing, comeliness in the dancing and gestures; and one should also say that no small part is played therein by painting, through the [scenic] perspective and the costumes; so that, together with the intellect, all the noblest senses are gratified at once by the most delightful arts discovered by human ingenuity.\n"
+  },
+  {
+    "file": "scheibe_on_js_bach.txt",
+    "answer": "Scheibe on J.S. Bach",
+    "text": "Introductory Note\nWhat Bach’s contemporaries thought about him is strikingly illustrated in the controversy the highlights of which are given here. The dispute was touched off by a criticism of Bach published by Johann Adolph Scheibe.\n\nScheibe had been a pupil of Bach’s. In 1729 he had applied for the post of organist at St. Thomas’s, and Bach had been one of the judges who picked Görner in preference to him. Perhaps the defeat rankled, and it is possible that Scheibe was voicing his resentment in the criticism that he published anonymously in his Critischer Musikus.\n\nIn it he accused Bach, as many a contemporary may have done, of writing in an overloaded style. But the criticism is not particularly severe, and does not really smack of personal resentment. Doubtless it was the anonymity that Scheibe had foolishly assumed that made the Bach worshipers spring into action, counterattacking with considerably more vehemence and personal invective than the attack itself had shown.\n\nThe first reproof to Scheibe was administered by a teacher of rhetoric at Leipzig University, Johann Abraham Birnbaum, who, according to Mizler, possessed a good grasp of music and played the clavier decently. His essay was first published as a pamphlet and then reprinted in Mizler’s Musikalische Bibliothek. Scheibe, too, reprinted it, with numerous footnotes. From then on, the matter became the object of rebuttal and surrebuttal in a series of increasingly lengthy papers.\n\nScheibe repeated some of his original statements in a letter published by Mattheson, and drew a reply from Mizler. Scheibe then resorted to writing thinly veiled parodies on Bach and Mizler, but also made various attempts to do justice to Bach in print (see Nos. 325, 331, and 332).\n\nA considerable part of this tempest in a teapot centered on the single word Musikant, which had originally designated simply a musician, without any derogatory connotation. But just at this time it had begun to assume the meaning of a mere practical and somewhat humble musician, like “fiddler,” as opposed to “violinist,” in modern usage. Since no exact equivalent exists in English, we have kept the word wherever it appears.\n\n343. “Letter from an Able Musikant Abroad” [by Johann Adolph Scheibe], May 14, 1737 (BD II, no. 400)\n. . . Finally, Mr. [Bach] is the most eminent of the Musikanten in ———. He is an extraordinary artist on the clavier and on the organ, and he has until now encountered only one person with whom he can dispute the palm of superiority. I have heard this great man play on various occasions. One is amazed at his ability, and one can hardly conceive how it is possible for him to achieve such agility, with his fingers and with his feet, in the crossings, extensions, and extreme jumps that he manages, without mixing in a single wrong tone, or displacing his body by any violent movement.\n\nThis great man would be the admiration of whole nations if he had more amenity [Annehmlichkeit], if he did not take away the natural element in his pieces by giving them a turgid [schwülstig] and confused style, and if he did not darken their beauty by an excess of art. Since he judges according to his own fingers, his pieces are extremely difficult to play; for he demands that singers and instrumentalists should be able to do with their throats and instruments whatever he can play on the clavier. But this is impossible. Every ornament, every little grace, and everything that one thinks of as belonging to the method of playing, he expresses completely in notes: and this not only takes away from his pieces the beauty of harmony but completely covers the melody throughout. All the voices must work with each other and be of equal difficulty, and none of them can be recognized as the principal voice. In short, he is in music what Mr. von Lohenstein was in poetry. Turgidity has led them both from the natural to the artificial, and from the lofty to the somber; and in both one admires the onerous labor and uncommon effort—which, however, are vainly employed, since they conflict with Nature.\n"
+  },
+  {
+    "file": "cuvelier_on_joseph_bologne.txt",
+    "answer": "Cuvelier on Joseph Bologne",
+    "text": "The arts and amity have just lost the celebrated St.-George....This man, the most amazing of his century by the variety and superiority of his talents, had for some time been tormented by a violent fever, that left him for a moment only to assault him once again with renewed fury. His vigorous temperament has often gained the advantage against this cruel illness yet after a month of suffering he succumbed on the 21st of Prairial at five o’clock in the evening. During this last period of time he retired to the home of a friend, in the rue Boucherat, his death was marked by the calm of the wise and the dignity of the man of strong will.\n\nSt. George had reached his sixtieth year: born with a fiery temperament and the most outstanding physical resources, he was a constant supporter of the weak and opponent of the oppressor; his urbanity, his gentle manners and benevolent soul always endeared him to those who sought his company; obliging, generous, witty, gallant and sensitive, his loss is lamented equally by the fair sex, enthralled by his gifts, and by his friends who readily forgave the slight aberrations of his head, in favor of the precious qualities of his heart.\n\nThe entire world knows St. George’s superiority in the art of fencing; he was no less superior in the dance, equitation, music, and without exception in all the physical exercises. He composed with infinite ease and natural grace: he had left us with a number of operas, that were only kept from achieving grand success by the weakness of their librettos; a multitude of charming romances, and concertos, several of which, though published under the name of the famous Jarnovitch, were by no means disavowed by that great master.\n\nDuring the last two years of his life he had been particularly devoted to the violin, and he used to say that he had never played it better. Indeed, he was so expert in that field, that if I might dare to use the expression, I would say that he was the VOLTAIRE of the musical arts.\n\nThe tender friendship that he had always demonstrated towards me and the affinity of our tastes, empower me to spread a shade over his tomb with the first cypress.... Artists more able than myself might offer his memory the proper eulogy his virtues and talents deserve.... but none shall feel more keenly his loss!\n\n— J. S. A. CUVELIER\nLE COURIER DES SPECTACLES\n\n\n"
+  },
+  {
+    "file": "beethoven_heiligenstadt_testament.txt",
+    "answer": "Beethoven, Heiligenstadt Testament",
+    "text": "This famous document, drafted in the form of a testament addressed to his two brothers, was found among Beethoven’s effects when he died. It had been written twenty-five years earlier in the village of Heiligenstadt, on the outskirts of Vienna, at the most critical moment in the composer’s life, when he had had to face the fact that his deafness was progressive and, probably, incurable.\n\nFor my brothers Carl and [Johann] Beethoven.\n\nO ye men who think or declare that I am hostile stubborn or Misanthropic, how you wrong me you do not know the secret motive of what seems thus to you, from Childhood my Heart and Mind were inclined to the Gentle Feeling of goodwill, indeed I was ever disposed to accomplish great Feats, but only reflect that for the last 6 years an incurable condition has seized me, worsened by senseless physicians, cheated from year to year in the Hope of improvement, finally compelled to the prospect of a lasting Ailment (whose Curing may perhaps take years or indeed be impossible). Born with a fiery Lively Temperament susceptible even to the Diversions of Society, I soon had to keep to myself, pass my life in solitude, if I attempted from time to time to rise above all this, o how harshly then was I repulsed by the doubly sad Experience of my bad Hearing, yet I could not say to People: speak louder, shout, for I am deaf, alas how could I then acknowledge the Weakness of a Faculty which ought to be more perfect in me than in others, a Faculty I once had to the highest degree of Perfection, such Perfection as only few of my Calling surely have or have had—o I cannot do it. Therefore forgive me if you see me withdrawing when I should gladly join you. My misfortune afflicts me doubly, since it causes me to be misunderstood. Diversion in Human Society, civilized Conversation, mutual Effusions cannot take place for me. All but alone, I enter society no more than is required by the most urgent Necessity. I must live like a Banished man; if I approach a company, a hot anxiety invades me, because I am afraid of being exposed to the Danger of letting my Condition be noticed—and thus has it been this half-year too, which I have spent in the country, my wise Physician having ordered me to spare my Hearing as much as possible. He nearly met my present Disposition, even though I have sometimes let myself be led astray by an Urge for Society. But what Mortification if someone stood beside me and heard a flute from afar and I heard nothing; or someone heard a Shepherd Singing, and I heard nothing. Such Happenings brought me close to Despair; I was not far from ending my own life—only Art, only art held me back. Ah, it seemed impossible to me that I should leave the world before I had produced all that I felt I might, and so I spared this wretched life—truly wretched; a body so susceptible that a somewhat rapid change can take me from the Best Condition to the worst. Patience—so now I must choose Her for my guide, I have done so—I hope that my decision to persevere may endure until it please the inexorable Fates to break the Thread; perhaps I will improve, perhaps not. I am resigned—to be forced already in my 28th year to become a Philosopher is not easy, and harder for an Artist than for anyone else. Deity, thou lookest down into my innermost being; thou knowest it, thou seest that charity and benevolence dwell within,—o Men, when you read this some day, think then that you have wronged me, and let any unhappy man console himself by finding another one like himself, one who, despite Nature’s Impediments, yet did what was in his Power to do to be admitted to the Ranks of worthy Artists and Men. And so it is done—I hasten with joy towards my Death—should it come before I have had an Opportunity to disclose all my Artistic Capacities, then it shall still have come too soon despite my Hard Destiny, and I should indeed wish it came later—yet even then am I content. Does it not free me from an endless Suffering State? Come when you will, I’ll meet you bravely—farewell and do not wholly forget me in Death. I have deserved it of you, for in Life I thought of you often, in order to make you happy, so may you be—\n\nLudwig van Beethoven\n\nHeiligenstadt\n6th October\n1802\n\nHeiligenstadt 10th October 1802 and so I bid you farewell—and sadly too—yes the cherished Hope—which I brought here with me, that I might be cured at least up to a Point—it must abandon me completely now, as Autumn Leaves fall away, wither; so has—it too wilted for me, I go from here—much as I came—even the High Courage—that often inspired me during the Lovely Days of Summer—has vanished—o Providence—grant me one day of pure Joy—the inner reverberation of true Joy has so long been a stranger tobee me—o when—o when, o Deity—may I feel it once more in the Temple of Nature and Mankind,—Never?—no—o it would be too hard.\n"
+  }
+];
+
+    const SLICE_MIN = 100;
+    const SLICE_MAX = 150;
+    const WEIGHT_MIN = 1;
+    const WEIGHT_MAX = 16;
+    const WEIGHT_CORRECT_FACTOR = 0.5;
+    const WEIGHT_WRONG_BOOST = 2;
+
+    const nextBtn = document.getElementById("nextBtn");
+    const answerArea = document.getElementById("answerArea");
+    const feedback = document.getElementById("feedback");
+    const statusLabel = document.getElementById("statusLabel");
+    const wordLabel = document.getElementById("wordLabel");
+    const passageBody = document.getElementById("passageBody");
+
+    const weights = READINGS.map(() => 4);
+    let currentIndex = null;
+    let answered = false;
+
+    function getSetting(name) {
+      return document.querySelector(`input[name="${name}"]:checked`).value;
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function pickReadingIndex() {
+      const mode = getSetting("studyMode");
+      if (mode === "random") {
+        return Math.floor(Math.random() * READINGS.length);
+      }
+
+      const total = weights.reduce((sum, w) => sum + w, 0);
+      let r = Math.random() * total;
+      for (let i = 0; i < weights.length; i++) {
+        r -= weights[i];
+        if (r <= 0) return i;
+      }
+      return weights.length - 1;
+    }
+
+    function updateWeight(index, correct) {
+      if (getSetting("studyMode") !== "learn") return;
+      if (correct) {
+        weights[index] = Math.max(WEIGHT_MIN, weights[index] * WEIGHT_CORRECT_FACTOR);
+      } else {
+        weights[index] = Math.min(WEIGHT_MAX, weights[index] + WEIGHT_WRONG_BOOST);
+      }
+    }
+
+    function clearFeedback() {
+      feedback.className = "feedback";
+      feedback.textContent = "";
+    }
+
+    function showFeedback(ok, message, correctAnswer) {
+      feedback.className = `feedback show ${ok ? "success" : "error"}`;
+      feedback.textContent = "";
+      feedback.appendChild(document.createTextNode(message));
+      if (!ok && correctAnswer) {
+        const span = document.createElement("span");
+        span.className = "correct-answer";
+        span.textContent = `Correct answer: ${correctAnswer}`;
+        feedback.appendChild(span);
+      }
+    }
+
+    function paragraphsFrom(raw) {
+      return raw
+        .replace(/\r\n/g, "\n")
+        .trim()
+        .split(/\n\s*\n| {3,}/)
+        .map((p) => p.replace(/\n/g, " ").replace(/\s+/g, " ").trim())
+        .filter(Boolean);
+    }
+
+    function countWords(text) {
+      return text.trim().split(/\s+/).filter(Boolean).length;
+    }
+
+    function isSentenceStart(words, i) {
+      if (i === 0) return true;
+      const prev = words[i - 1];
+      const cur = words[i];
+      return /[.!?]["”']*$/.test(prev) && /^["“']?[A-Z]/.test(cur);
+    }
+
+    function randomSlice(raw) {
+      const words = raw.replace(/\r\n/g, "\n").trim().split(/\s+/).filter(Boolean);
+      if (words.length <= SLICE_MAX) {
+        return {
+          text: words.join(" "),
+          wordCount: words.length,
+          fromStart: true,
+          fromEnd: true,
+        };
+      }
+
+      const target = SLICE_MIN + Math.floor(Math.random() * (SLICE_MAX - SLICE_MIN + 1));
+      const starts = [];
+      for (let i = 0; i <= words.length - SLICE_MIN; i++) {
+        if (isSentenceStart(words, i)) starts.push(i);
+      }
+
+      const viable = starts.length ? starts : [0];
+      const start = viable[Math.floor(Math.random() * viable.length)];
+      const end = Math.min(start + target, words.length);
+      const slice = words.slice(start, end);
+      const fromStart = start === 0;
+      const fromEnd = end === words.length;
+      let text = slice.join(" ");
+      if (!fromStart) text = "... " + text;
+      if (!fromEnd) text = text + " ...";
+      return { text, wordCount: slice.length, fromStart, fromEnd };
+    }
+
+    function renderPassage(paras) {
+      passageBody.textContent = "";
+      paras.forEach((para) => {
+        const p = document.createElement("p");
+        p.textContent = para;
+        passageBody.appendChild(p);
+      });
+    }
+
+    function showNext() {
+      clearFeedback();
+      answered = false;
+      currentIndex = pickReadingIndex();
+      const reading = READINGS[currentIndex];
+      const mode = getSetting("passageMode");
+
+      if (mode === "full") {
+        const paras = paragraphsFrom(reading.text);
+        renderPassage(paras);
+        statusLabel.textContent = "Full passage";
+        wordLabel.textContent = `${countWords(reading.text)} words`;
+      } else {
+        const slice = randomSlice(reading.text);
+        renderPassage([slice.text]);
+        statusLabel.textContent = "Random slice";
+        wordLabel.textContent = `${slice.wordCount} words`;
+      }
+
+      renderAnswerUI();
+    }
+
+    function pickWrongAnswers(correctIndex, count) {
+      const others = READINGS.map((_, i) => i).filter((i) => i !== correctIndex);
+      return shuffle(others).slice(0, count).map((i) => READINGS[i].answer);
+    }
+
+    function handleAnswer(correct) {
+      if (answered || currentIndex === null) return;
+      answered = true;
+      updateWeight(currentIndex, correct);
+      const reading = READINGS[currentIndex];
+      if (correct) {
+        showFeedback(true, "Correct!");
+      } else {
+        showFeedback(false, "Incorrect.", reading.answer);
+      }
+    }
+
+    function renderAnswerUI() {
+      const format = getSetting("questionFormat");
+      answerArea.innerHTML = "";
+
+      if (format === "mcq") {
+        const p = document.createElement("p");
+        p.className = "prompt";
+        p.textContent = "Which reading is this from?";
+        answerArea.appendChild(p);
+
+        const options = shuffle([
+          READINGS[currentIndex].answer,
+          ...pickWrongAnswers(currentIndex, 3),
+        ]);
+
+        const list = document.createElement("div");
+        list.className = "mcq-options";
+
+        options.forEach((text) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "btn mcq-btn";
+          btn.textContent = text;
+          btn.addEventListener("click", () => {
+            if (answered) return;
+            const isCorrect = text === READINGS[currentIndex].answer;
+            list.querySelectorAll(".mcq-btn").forEach((b) => {
+              b.disabled = true;
+              if (b.textContent === READINGS[currentIndex].answer) {
+                b.classList.add("correct");
+              }
+            });
+            if (!isCorrect) btn.classList.add("incorrect");
+            handleAnswer(isCorrect);
+          });
+          list.appendChild(btn);
+        });
+
+        answerArea.appendChild(list);
+      } else {
+        const p = document.createElement("p");
+        p.className = "prompt";
+        p.textContent = "Type the author and work (exact wording).";
+        answerArea.appendChild(p);
+
+        const form = document.createElement("div");
+        form.className = "free-text";
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.placeholder = "Author, Work title…";
+        input.autocomplete = "off";
+        input.spellcheck = false;
+
+        const submit = document.createElement("button");
+        submit.type = "button";
+        submit.className = "btn btn-submit";
+        submit.textContent = "Submit";
+
+        const check = () => {
+          if (answered) return;
+          const typed = input.value.trim().toLowerCase();
+          const expected = READINGS[currentIndex].answer.trim().toLowerCase();
+          const isCorrect = typed === expected;
+          input.classList.remove("correct", "incorrect");
+          input.classList.add(isCorrect ? "correct" : "incorrect");
+          input.readOnly = true;
+          submit.disabled = true;
+          handleAnswer(isCorrect);
+        };
+
+        submit.addEventListener("click", check);
+        input.addEventListener("keydown", (e) => {
+          if (e.key !== "Enter") return;
+          e.preventDefault();
+          if (answered) {
+            showNext();
+          } else {
+            check();
+          }
+        });
+
+        form.appendChild(input);
+        form.appendChild(submit);
+        answerArea.appendChild(form);
+        input.focus();
+      }
+    }
+
+    nextBtn.addEventListener("click", showNext);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" || !answered) return;
+      if (getSetting("questionFormat") !== "text") return;
+      if (e.target.matches("input, textarea, button, select")) return;
+      e.preventDefault();
+      nextBtn.click();
+    });
+
+    async function refreshFromFiles() {
+      try {
+        await Promise.all(READINGS.map(async (reading) => {
+          const res = await fetch("readings/" + encodeURIComponent(reading.file));
+          if (!res.ok) throw new Error("fetch failed");
+          reading.text = await res.text();
+        }));
+      } catch (err) {
+        // Embedded texts already loaded; file:// or CORS can skip fetch.
+      }
+    }
+
+    refreshFromFiles();
+  </script>
+</body>
+</html>

@@ -51,6 +51,31 @@
       margin-bottom: 1.5rem;
     }
 
+    .app-nav {
+      display: flex;
+      gap: 0.45rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .app-nav a {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.28rem 0.72rem;
+      border-radius: 999px;
+      border: 1.5px solid var(--panel-border);
+      background: #fff;
+      color: var(--ink-soft);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .app-nav a[aria-current="page"] {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
     header h1 {
       font-family: "Fraunces", serif;
       font-size: clamp(1.75rem, 4vw, 2.35rem);
@@ -406,6 +431,10 @@
 <body>
   <div class="wrap">
     <header>
+      <nav class="app-nav" aria-label="Study apps">
+        <a href="index.html" aria-current="page">Listening</a>
+        <a href="readings.html">Readings</a>
+      </nav>
       <h1>Music Hum Listening</h1>
       <p>Identify the composer and work from a 30-second clip.</p>
     </header>
